@@ -10,8 +10,9 @@ In your js file add the component to your vue instance;
 
 ```javascript
 import PreviewBox from 'preview-box/src/components/PreviewBoxComponent';
+window.Vue = require('vue');
 
-if(d.getElementById('example')) {
+if(document.getElementById('example')) {
     new Vue({
         components: {
             'preview-box': PreviewBox
