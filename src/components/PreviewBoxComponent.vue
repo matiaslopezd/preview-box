@@ -176,6 +176,221 @@
     cursor: -webkit-grabbing;
 }
 
+.pb--full-screen {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem;
+    background-color: #2d3748;
+    z-index: 40;
+}
+
+.pb__hidden-copiers {
+    width: 0.25rem;
+    height: 0.25rem;
+    overflow: hidden;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 0;
+}
+
+.pb__container {
+    border-bottom-width: 1px;
+    border-color: #cbd5e0;
+    border-top-width: 1px;
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+}
+
+@media (min-width: 640px) {
+    .pb__container {
+        border-width: 1px;
+        border-radius: 0.5rem;
+    }
+}
+
+.pb__container__tabs {
+    position: relative;
+    background-color: #a0aec0;
+}
+
+.pb__container__tab {
+    background-color: #fff;
+    display: block;
+    position: relative;
+    min-height: calc(100vh / 2);
+}
+
+.pb__container__tab--iframe {
+    background-color: #a0aec0;
+    padding-right: 1rem;
+}
+
+.pb__container__iframe {
+    width: 100%;
+    position: relative;
+    overflow: auto;
+    border-width: 0;
+}
+
+.pb__container__iframe-shield {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+@media (min-width: 640px) {
+    .pb__container__iframe-handle {
+        height: auto;
+        padding: 0;
+        margin: 0;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+        border-left-width: 1px;
+        background-color: #f7fafc;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        width: 1rem;
+    }
+}
+
+.pb__container__handle-svg {
+    height: 1rem;
+    width: 1rem;
+    color: #718096;
+    pointer-events: none;
+}
+
+.pb__container__syntax-highlighter-outer {
+    padding: 0;
+    margin: 0 !important;
+}
+
+.pb__container__syntax-highlighter-inner {
+    display: block;
+    padding: 1rem;
+    -webkit-overflow-scrolling: touch;
+    white-space: pre-wrap;
+    margin: 0;
+    min-height: calc(100vh / 2);
+}
+
+.pb__header {
+    padding: 1rem 1.5rem;
+    border-bottom-width: 1px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: baseline;
+    -ms-flex-align: baseline;
+    align-items: baseline;
+    background-color: #fff;
+}
+
+.pb__header__heading {
+    font-size: 1rem;
+    line-height: 1.375;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    .pb__header__heading {
+        font-size: 1.125rem;
+    }
+}
+
+.pb__header__inner {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.pb__header__tabs {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-right-width: 1px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+    .pb__header__tabs {
+        font-size: 1rem;
+    }
+}
+
+.pb__header__tab {
+    margin-left: 0.5rem;
+    display: inline-block;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    line-height: 1;
+    padding: 0.5rem 0.75rem;
+    color: #718096;
+}
+
+.pb__header__tab:focus {
+    outline: 0;
+}
+
+.pb__header__tab--active {
+    background-color: #edf2f7;
+    color: #7f9cf5;
+}
+
+.pb__header__button {
+    margin-left: 0.75rem;
+    color: #a0aec0;
+}
+
+.pb__header__button:focus {
+    outline: 0;
+}
+
+.pb__header__button:hover {
+    color: #7f9cf5;
+}
+
+.pb__header__svg {
+    height: 1.25rem;
+    width: 1.25rem;
+    color: #a0aec0;
+}
+
+.pb__header__svg:hover {
+    color: #7f9cf5;
+}
+
 .pb--full-screen .pb__container__tabs {
     height: calc(100vh - 84px);
 }

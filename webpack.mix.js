@@ -13,7 +13,8 @@ const tailwindcss = require('tailwindcss');
  */
 
 mix
-    .sass('src/assets/sass/app.scss', 'public/css')
+    .setPublicPath('./public')
+    .sass('src/assets/sass/app.scss', 'css')
     .options({
         processCssUrls: false,
         postCss: [tailwindcss('tailwind.config.js') ],
