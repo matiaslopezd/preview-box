@@ -9,7 +9,7 @@
                 <!-- When on the setup screen, click the copy button and this data will be copied to the clipboard -->
             </template>
             <template v-slot:code-snippet>
-                <!-- This code is is to be in a raw entity format for syntax highlighting -->
+                <!-- This code is to be in a raw entity format for syntax highlighting -->
             </template>
             <template v-slot:copy-code-snippet>
                 <!-- When on the any other screen, click the copy button and this data will be copied to the clipboard -->
