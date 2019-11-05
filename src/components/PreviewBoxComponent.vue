@@ -99,7 +99,7 @@
             document.addEventListener('mousemove', this.onMouseMove);
             document.addEventListener('mouseup', this.onMouseUp);
             this.maxWidth = this.$refs.iframe.getBoundingClientRect().width;
-            this.$refs.copyCodeHTML.innerHTML = this.$slots['copy-code-snippet'][0].text;
+            this.$refs.copyCodeHTML.innerHTML = this.$slots['copy-code-snippet'][0].children[0].text;
             this.$refs.copySetup.innerHTML = this.$slots['copy-setup'][0].text;
             this.referenceId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10);
             this.copySetupId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10);
