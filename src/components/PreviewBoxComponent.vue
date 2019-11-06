@@ -41,6 +41,7 @@
                     <button ref="handle" v-on:mousedown="onMouseDown" class="pb__container__iframe-handle grabbable">
                         <svg class="pb__container__handle-svg" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5h2v14H8zM14 5h2v14h-2z"></path></svg>
                     </button>
+                    <div class="absolute left-0 bottom-0 bg-gray-200 m-4 rounded py-2 leading-none px-3 text-sm">{{ screenSize + 'px' }}</div>
                 </div>
                 <div class="pb__container__tab pb__container__tab--code" v-show="activeTabIndex === 2">
                     <div class="relative">
@@ -92,7 +93,8 @@
                 moving: false,
                 maxWidth: 0,
                 activeTabIndex: 1,
-                fullScreen: false
+                fullScreen: false,
+                screenSize: 0
             }
         },
         mounted() {
@@ -103,6 +105,7 @@
             this.$refs.copySetup.innerHTML = this.$slots['copy-setup'][0].text;
             this.referenceId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10);
             this.copySetupId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10);
+            this.setScreenSize();
             Prism.highlightAll();
 
             new ClipboardJS('.copy');
@@ -142,6 +145,7 @@
                 this.$refs.iframe.style.width = calcWidth + 'px';
                 this.$refs.handle.style.left = calcWidth + 'px';
                 this.$refs.handle.style.right = 0;
+                this.setScreenSize();
             },
             showTab(index) {
                 this.activeTabIndex = parseInt(index);
@@ -155,6 +159,9 @@
                     this.maxWidth = this.$refs.container.getBoundingClientRect().width - 16;
                     this.updatePosition();
                 });
+            },
+            setScreenSize() {
+                this.screenSize = this.$refs.iframe.getBoundingClientRect().width;
             }
         }
     }
