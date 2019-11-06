@@ -1,5 +1,8 @@
 # preview-box 
 
+![Downloads](https://img.shields.io/npm/dw/preview-box)
+![Latest Version](https://img.shields.io/npm/v/preview-box)
+
 ![Screenshot](./screenshot.png)
 
 Preview box is a recreation of [Adam Wathan's](https://twitter.com/adamwathan) and [Steve Schoger's](https://twitter.com/steveschoger) previewer which has recently been used on their upcoming project, [Tailwind UI](https://www.tailwindui.com/).
