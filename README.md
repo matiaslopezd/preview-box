@@ -1,4 +1,4 @@
-# preview-box 
+# Preview Box 
 
 ![Downloads](https://img.shields.io/npm/dw/preview-box)
 ![Latest Version](https://img.shields.io/npm/v/preview-box)
