@@ -94,12 +94,16 @@
                 maxWidth: 0,
                 activeTabIndex: 1,
                 fullScreen: false,
-                screenSize: 0
+                screenSize: 0,
+                lastClickIsHandle: false
             }
         },
         mounted() {
             document.addEventListener('mousemove', this.onMouseMove);
             document.addEventListener('mouseup', this.onMouseUp);
+            document.addEventListener('click', this.trackMouseClicks);
+            window.addEventListener('keyup', this.onKeyUp);
+
             this.maxWidth = this.$refs.iframe.getBoundingClientRect().width;
             this.$refs.copyCodeHTML.innerHTML = this.$slots['copy-code-snippet'][0].children[0].text;
             this.$refs.copySetup.innerHTML = this.$slots['copy-setup'][0].text;
@@ -121,10 +125,49 @@
             });
         },
         methods: {
+            onKeyUp(e) {
+                if(!this.lastClickIsHandle) {
+                    return false;
+                }
+                switch(parseInt(e.keyCode)) {
+                    case 37: this.moveIframeLeft(); break;
+                    case 39: this.moveIframeRight(); break;
+                }
+            },
+            moveIframeLeft() {
+                let width = this.$refs.iframe.getBoundingClientRect().width - 1;
+                width = width < this.minScreenSize ? this.minScreenSize : (width > this.maxWidth ? this.maxWidth : width);
+
+                this.setWidthPosition(width);
+            },
+            moveIframeRight() {
+                let width = this.$refs.iframe.getBoundingClientRect().width + 1;
+                width = width < this.minScreenSize ? this.minScreenSize : (width > this.maxWidth ? this.maxWidth : width);
+
+                this.setWidthPosition(width);
+            },
+            setWidthPosition(width) {
+                this.$refs.iframe.style.width = width + 'px';
+                this.$refs.handle.style.left = width + 'px';
+                this.$refs.handle.style.right = 0;
+                this.setScreenSize();
+            },
+            updatePosition() {
+                let width = this.$refs.iframe.getBoundingClientRect().width;
+                let calcWidth = width - this.position1;
+                calcWidth = calcWidth < this.minScreenSize ? this.minScreenSize : (calcWidth > this.maxWidth ? this.maxWidth : calcWidth);
+
+                this.setWidthPosition(calcWidth);
+            },
+            trackMouseClicks(e) {
+                this.lastClickIsHandle = e.target === this.$refs.handle;
+            },
             onMouseDown(e) {
                 e.preventDefault();
+                window.focus();
                 this.position2 = e.clientX;
                 this.moving = true;
+                this.lastClickIsHandle = true;
             },
             onMouseMove(e) {
                 e.preventDefault();
@@ -136,16 +179,6 @@
             },
             onMouseUp() {
                 this.moving = false;
-            },
-            updatePosition() {
-                let width = this.$refs.iframe.getBoundingClientRect().width;
-                let calcWidth = width - this.position1;
-                calcWidth = calcWidth < this.minScreenSize ? this.minScreenSize : (calcWidth > this.maxWidth ? this.maxWidth : calcWidth);
-
-                this.$refs.iframe.style.width = calcWidth + 'px';
-                this.$refs.handle.style.left = calcWidth + 'px';
-                this.$refs.handle.style.right = 0;
-                this.setScreenSize();
             },
             showTab(index) {
                 this.activeTabIndex = parseInt(index);
