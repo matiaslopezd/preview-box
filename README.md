@@ -56,6 +56,8 @@ In you HTML or template use the following setup;
 - [x] Full screen mode
 - [x] Setup tab
 - [x] Display screen width in pixels
+- [ ] Snap guides to preset widths with visual markers
+- [ ] Use arrow keys to fine tune width
 
 ## Project setup
 ```
