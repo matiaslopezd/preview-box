@@ -51,6 +51,12 @@ In you HTML or template use the following setup;
 </div>
 ```
 
+## Extra Features
+
+- [x] Full screen mode
+- [x] Setup tab
+- [x] Display screen width in pixels
+
 ## Project setup
 ```
 npm install
