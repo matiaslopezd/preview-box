@@ -5,7 +5,7 @@
 
 ![Screenshot](./screenshot.png)
 
-Preview box is a recreation of [Adam Wathan's](https://twitter.com/adamwathan) and [Steve Schoger's](https://twitter.com/steveschoger) previewer which has recently been used on their upcoming project, [Tailwind UI](https://www.tailwindui.com/).
+Preview box is a re-creation of [Adam Wathan's](https://twitter.com/adamwathan) and [Steve Schoger's](https://twitter.com/steveschoger) previewer which has recently been used on their upcoming project, [Tailwind UI](https://www.tailwindui.com/).
 We have also added an extra tab for setup and a full screen mode.
 
 ## Usage
