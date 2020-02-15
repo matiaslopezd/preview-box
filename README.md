@@ -35,7 +35,12 @@ In you HTML or template use the following setup;
 ```html
 <div id="example">
     <!-- Other properties are :title and :language -->
-    <preview-box :min-screen-size="380" :iframe-src="'/card.html'">
+    <preview-box
+        :min-screen-size="380"
+        :snap-to-width="true"
+        :show-guides="true"
+        :iframe-src="'/card.html'"
+    >
         <template v-slot:setup>
             <div>Some setup text</div>
         </template>
@@ -59,7 +64,7 @@ In you HTML or template use the following setup;
 - [x] Full screen mode
 - [x] Setup tab
 - [x] Display screen width in pixels
-- [ ] Snap guides to preset widths with visual markers
+- [x] Snap guides to preset widths with visual markers
 - [x] Use arrow keys to fine tune width
 
 If you have released the handle and not clicked on any other elements you can now use the arrow keys to shift the width a pixel either way.

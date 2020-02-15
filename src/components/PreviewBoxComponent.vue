@@ -35,9 +35,12 @@
                 <div class="pb__container__tab pb__container__tab--setup" v-show="activeTabIndex === 0">
                     <slot name="setup"></slot>
                 </div>
-                <div v-show="activeTabIndex === 1" class="pb__container__tab pb__container__tab--iframe">
+                <div ref="container" v-show="activeTabIndex === 1" class="pb__container__tab pb__container__tab--iframe">
                     <iframe ref="iframe" height="600" :src="iframeSrc" class="pb__container__iframe"></iframe>
                     <div v-if="moving" class="pb__container__iframe-shield"></div>
+                    <div v-if="showGuides">
+                        <div v-for="(guide,index) in snapGuides" :key="index" :style="{left: guide+'px'}" class="absolute top-0 bottom-0 border-r border-dashed border-gray-300"></div>
+                    </div>
                     <button ref="handle" v-on:mousedown="onMouseDown" class="pb__container__iframe-handle grabbable">
                         <svg class="pb__container__handle-svg" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5h2v14H8zM14 5h2v14h-2z"></path></svg>
                     </button>
@@ -56,7 +59,6 @@
 </template>
 
 <script>
-    import Vue from 'vue';
     import ClipboardJS from 'clipboard';
     import Prism from 'prismjs';
     import 'balloon-css';
@@ -82,29 +84,50 @@
                 required: false,
                 type: String,
                 default: ''
+            },
+            snapGuides: {
+                required: false,
+                type: Array,
+                default: () => {
+                    return [380, 640, 768, 1020, 1280]
+                }
+            },
+            snapToWidth: {
+                required: false,
+                type: Boolean,
+                default: false
+            },
+            showGuides: {
+                required: false,
+                type: Boolean,
+                default: true
             }
         },
         data () {
             return {
                 referenceId: null,
                 copySetupId: null,
-                position1: 0,
-                position2: 0,
                 moving: false,
-                maxWidth: 0,
                 activeTabIndex: 1,
                 fullScreen: false,
                 screenSize: 0,
-                lastClickIsHandle: false
+                lastClickIsHandle: false,
+                boundingBox: {
+                    x1: 0,
+                    x2: 0,
+                    min_width: 0,
+                    max_width: 0,
+                    tolerance: 0,
+                    handle_width: 0,
+                    guidePoints: []
+                },
             }
         },
         mounted() {
-            document.addEventListener('mousemove', this.onMouseMove);
-            document.addEventListener('mouseup', this.onMouseUp);
-            document.addEventListener('click', this.trackMouseClicks);
-            window.addEventListener('keyup', this.onKeyUp);
+            this.setBoundingBox();
+            this.trackEvents();
+            this.setGuidePoints();
 
-            this.maxWidth = this.$refs.iframe.getBoundingClientRect().width;
             this.$refs.copyCodeHTML.innerHTML = this.$slots['copy-code-snippet'][0].children[0].text;
             this.$refs.copySetup.innerHTML = this.$slots['copy-setup'][0].text;
             this.referenceId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10);
@@ -125,6 +148,39 @@
             });
         },
         methods: {
+            setGuidePoints() {
+                this.boundingBox.guidePoints = [];
+                this.snapGuides.forEach((guide,index) => {
+                    if(guide < this.boundingBox.min_width || guide > this.boundingBox.max_width) {
+                        return false;
+                    }
+                    this.boundingBox.guidePoints.push({
+                        guide,
+                        x1: index === 0 ? guide : (guide-(guide-this.snapGuides[index-1])/2),
+                        x2: this.snapGuides[index+1] === undefined ? guide : (guide+(this.snapGuides[index+1]-guide)/2),
+                    });
+                });
+            },
+            trackEvents() {
+                const _this = this;
+                window.addEventListener('mousemove', (e) => this.onMouseMove(e));
+                window.addEventListener('mouseup', (e) => this.onMouseUp(e));
+                document.addEventListener('click', (e) => this.trackMouseClicks(e));
+                window.addEventListener('keyup', (e) => this.onKeyUp(e));
+                window.addEventListener('resize', function(e) {
+                    _this.setBoundingBox(e);
+                });
+            },
+            setBoundingBox() {
+                // z
+                let bcr = this.$refs.container.getBoundingClientRect();
+                let border = 1; // write something better than this - its embarrassing
+                this.boundingBox.x1 = bcr.x + border;
+                this.boundingBox.x2 = bcr.x + bcr.width + border;
+                this.boundingBox.min_width = this.minScreenSize;
+                this.boundingBox.handle_width = this.$refs.handle.getBoundingClientRect().width;
+                this.boundingBox.max_width = bcr.width - this.boundingBox.handle_width;
+            },
             onKeyUp(e) {
                 if(!this.lastClickIsHandle) {
                     return false;
@@ -136,13 +192,13 @@
             },
             moveIframeLeft() {
                 let width = this.$refs.iframe.getBoundingClientRect().width - 1;
-                width = width < this.minScreenSize ? this.minScreenSize : (width > this.maxWidth ? this.maxWidth : width);
+                width = width < this.minScreenSize ? this.minScreenSize : (width > this.boundingBox.max_width ? this.boundingBox.max_width : width);
 
                 this.setWidthPosition(width);
             },
             moveIframeRight() {
                 let width = this.$refs.iframe.getBoundingClientRect().width + 1;
-                width = width < this.minScreenSize ? this.minScreenSize : (width > this.maxWidth ? this.maxWidth : width);
+                width = width < this.minScreenSize ? this.minScreenSize : (width > this.boundingBox.max_width ? this.boundingBox.max_width : width);
 
                 this.setWidthPosition(width);
             },
@@ -152,29 +208,33 @@
                 this.$refs.handle.style.right = 0;
                 this.setScreenSize();
             },
-            updatePosition() {
-                let width = this.$refs.iframe.getBoundingClientRect().width;
-                let calcWidth = width - this.position1;
-                calcWidth = calcWidth < this.minScreenSize ? this.minScreenSize : (calcWidth > this.maxWidth ? this.maxWidth : calcWidth);
-
-                this.setWidthPosition(calcWidth);
-            },
             trackMouseClicks(e) {
                 this.lastClickIsHandle = e.target === this.$refs.handle;
             },
             onMouseDown(e) {
                 e.preventDefault();
                 window.focus();
-                this.position2 = e.clientX;
+                this.setBoundingBox();
+                this.boundingBox.tolerance = e.clientX - this.$refs.handle.getBoundingClientRect().x;
                 this.moving = true;
                 this.lastClickIsHandle = true;
             },
             onMouseMove(e) {
                 e.preventDefault();
-                this.position1 = this.position2 - e.clientX;
-                this.position2 = e.clientX;
+                this.boundingBox.handle = e.clientX <= this.boundingBox.x1 ? this.boundingBox.x1 : (e.clientX >= this.boundingBox.x2 ? this.boundingBox.x2 : e.clientX);
+                this.boundingBox._width = this.boundingBox.handle - this.boundingBox.x1 - this.boundingBox.tolerance;
+                this.boundingBox.width = this.boundingBox._width <= this.boundingBox.min_width ? this.boundingBox.min_width : (this.boundingBox._width >= this.boundingBox.max_width ? this.boundingBox.max_width : this.boundingBox._width);
+
                 if(this.moving) {
-                    this.updatePosition();
+                    if(this.snapToWidth) {
+                        this.boundingBox.guidePoints.forEach(point => {
+                            if(this.boundingBox._width >= point.x1 && this.boundingBox._width < point.x2) {
+                                this.boundingBox.width = point.guide;
+                                return;
+                            }
+                        });
+                    }
+                    this.setWidthPosition(this.boundingBox.width);
                 }
             },
             onMouseUp() {
@@ -188,9 +248,12 @@
                 e.preventDefault();
                 this.$refs.iframe.focus();
                 this.fullScreen = ! this.fullScreen;
-                Vue.nextTick(() => {
-                    this.maxWidth = this.$refs.container.getBoundingClientRect().width - 16;
-                    this.updatePosition();
+                this.$nextTick(() => {
+                    this.setBoundingBox();
+                    this.setGuidePoints();
+                    if(this.boundingBox._width > this.boundingBox.max_width) {
+                        this.setWidthPosition(this.boundingBox.max_width);
+                    }
                 });
             },
             setScreenSize() {
@@ -245,12 +308,12 @@
     overflow: hidden;
 }
 
-@media (min-width: 640px) {
+
     .pb__container {
         border-width: 1px;
         border-radius: 0.5rem;
     }
-}
+
 
 .pb__container__tabs {
     position: relative;
@@ -285,7 +348,7 @@
     left: 0;
 }
 
-@media (min-width: 640px) {
+
     .pb__container__iframe-handle {
         height: auto;
         padding: 0;
@@ -307,7 +370,7 @@
         align-items: center;
         width: 1rem;
     }
-}
+
 
 .pb__container__handle-svg {
     height: 1rem;

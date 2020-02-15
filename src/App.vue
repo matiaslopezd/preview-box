@@ -1,7 +1,11 @@
 <template>
     <div id="app">
         <!-- Other properties are :title and :language -->
-        <preview-box :min-screen-size="380" :iframe-src="'/card.html'">
+        <preview-box
+                :min-screen-size="380"
+                :snap-to-width="true"
+                :show-guides="true"
+                :iframe-src="'/card.html'">
             <template v-slot:setup>
                 <div>Some setup text</div>
             </template>
