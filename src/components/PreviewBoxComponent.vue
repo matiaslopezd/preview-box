@@ -172,9 +172,8 @@
                 });
             },
             setBoundingBox() {
-                // z
                 let bcr = this.$refs.container.getBoundingClientRect();
-                let border = 1; // write something better than this - its embarrassing
+                let border = parseInt(window.getComputedStyle(document.querySelector('.pb__container')).borderLeftWidth.replace('px',''));
                 this.boundingBox.x1 = bcr.x + border;
                 this.boundingBox.x2 = bcr.x + bcr.width + border;
                 this.boundingBox.min_width = this.minScreenSize;
