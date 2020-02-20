@@ -89,7 +89,7 @@
                 required: false,
                 type: Array,
                 default: () => {
-                    return [380, 640, 768, 1020, 1280]
+                    return [380, 640, 768, 1024, 1280]
                 }
             },
             snapToWidth: {
@@ -296,7 +296,7 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    z-index: 0;
+    z-index: -1;
 }
 
 .pb__container {
